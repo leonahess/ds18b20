@@ -9,7 +9,7 @@ pipeline {
         label "Pi_Zero"
       }
       steps {
-        sh "docker build -t hs110 ."
+        sh "docker build -t ds18b20 ."
       }
     }
     stage('Tag Container') {
