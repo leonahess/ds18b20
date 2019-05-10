@@ -23,23 +23,27 @@ pipeline {
         sh "docker tag ds18b20 leonhess/ds18b20:${env.BUILD_NUMBER}"
       }
     }
-    stage('Push to local Registry') {
-      agent {
-        label "Pi_Zero"
-      }
-      steps {
-        sh "docker push fx8350:5000/ds18b20:${env.BUILD_NUMBER}"
-        sh "docker push fx8350:5000/ds18b20:latest"
-      }
-    }
-    stage('Push to DockerHub') {
-      agent {
-        label "Pi_Zero"
-      }
-      steps {
-        withDockerRegistry([credentialsId: "dockerhub", url: ""]) {
-          sh "docker push leonhess/ds18b20:${env.BUILD_NUMBER}"
-          sh "docker push leonhess/ds18b20:latest"
+    stage('Push to Registries') {
+      parallel {
+        stage('Push to local Registry') {
+          agent {
+            label "Pi_Zero"
+          }
+          steps {
+            sh "docker push fx8350:5000/ds18b20:${env.BUILD_NUMBER}"
+            sh "docker push fx8350:5000/ds18b20:latest"
+          }
+        }
+        stage('Push to DockerHub') {
+          agent {
+            label "Pi_Zero"
+          }
+          steps {
+            withDockerRegistry([credentialsId: "dockerhub", url: ""]) {
+              sh "docker push leonhess/ds18b20:${env.BUILD_NUMBER}"
+              sh "docker push leonhess/ds18b20:latest"
+            }
+          }
         }
       }
     }
