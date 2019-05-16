@@ -59,32 +59,15 @@ pipeline {
       }
     }
     stage('Deploy') {
-      parallel {
-        stage('Deploy to leon-pi-zero-1') {
-          agent {
-            label "master"
-          }
-          steps {
-            sshagent(credentials: ['d36bc821-dad8-45f5-9afc-543f7fe483ad']) {
-              sh "ssh -o StrictHostKeyChecking=no pirate@leon-pi-zero-1 docker kill ds18b20"
-              sh "ssh -o StrictHostKeyChecking=no pirate@leon-pi-zero-1 docker rm ds18b20"
-              sh "ssh -o StrictHostKeyChecking=no pirate@leon-pi-zero-1 docker run --restart always -d --name=ds18b20 --privileged fx8350:5000/ds18b20:latest"
-            }
-          }
-        }
-        stage('Deploy to leon-pi-zero-2') {
-          agent {
-            label 'master'
-          }
-          steps {
-            sshagent(credentials: ['d36bc821-dad8-45f5-9afc-543f7fe483ad']) {
-              sh "ssh -o StrictHostKeyChecking=no pirate@leon-pi-zero-2 docker kill ds18b20"
-              sh "ssh -o StrictHostKeyChecking=no pirate@leon-pi-zero-2 docker rm ds18b20"
-              sh "ssh -o StrictHostKeyChecking=no pirate@leon-pi-zero-2 docker run --restart always -d --name=ds18b20 --privileged fx8350:5000/ds18b20:latest"
-            }
-          }
+      agent {
+        label "master"
+      }
+      steps {
+        ansiblePlaybook(
+          playbook: 'deploy.yml',
+          credentialsId: 'd36bc821-dad8-45f5-9afc-543f7fe483ad'
+          )
         }
       }
     }
   }
-}

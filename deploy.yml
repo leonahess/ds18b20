@@ -1,0 +1,11 @@
+- hosts: collectors
+  tasks:
+    - name: Running the Container
+      docker_container:
+        image: fx8350:5000/ds18b20:latest
+        name: ds18b20
+        state: started
+        privileged: yes
+        restart_policy: always
+        force_kill: yes
+        hostname: "{{ ansible_hostname }}"
