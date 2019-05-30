@@ -1,5 +1,6 @@
 import datetime
 import time
+import config
 from app.performance import Performance
 from app import client
 
@@ -54,6 +55,6 @@ class DS18B20:
         json = self.assemble_json()
 
         try:
-            client.write_points(json, protocol="json")
+            client.write_points(json, protocol="json", retention_policy=config.influx_retention_policy)
         except Exception as e:
             print(e)
