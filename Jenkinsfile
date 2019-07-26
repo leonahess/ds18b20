@@ -18,9 +18,7 @@ pipeline {
       }
       steps {
         sh "docker tag ds18b20 fx8350:5000/ds18b20:latest"
-        sh "docker tag ds18b20 fx8350:5000/ds18b20:${env.BUILD_NUMBER}"
         sh "docker tag ds18b20 leonhess/ds18b20:latest"
-        sh "docker tag ds18b20 leonhess/ds18b20:${env.BUILD_NUMBER}"
       }
     }
     stage('Push to Registries') {
@@ -30,7 +28,6 @@ pipeline {
             label "Pi_Zero"
           }
           steps {
-            sh "docker push fx8350:5000/ds18b20:${env.BUILD_NUMBER}"
             sh "docker push fx8350:5000/ds18b20:latest"
           }
         }
@@ -40,7 +37,6 @@ pipeline {
           }
           steps {
             withDockerRegistry([credentialsId: "dockerhub", url: ""]) {
-              sh "docker push leonhess/ds18b20:${env.BUILD_NUMBER}"
               sh "docker push leonhess/ds18b20:latest"
             }
           }
@@ -53,9 +49,7 @@ pipeline {
       }
       steps {
         sh "docker rmi fx8350:5000/ds18b20:latest"
-        sh "docker rmi fx8350:5000/ds18b20:${env.BUILD_NUMBER}"
         sh "docker rmi leonhess/ds18b20:latest"
-        sh "docker rmi leonhess/ds18b20:${env.BUILD_NUMBER}"
       }
     }
     stage('Deploy') {
