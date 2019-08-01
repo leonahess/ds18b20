@@ -6,7 +6,7 @@ pipeline {
   stages {
     stage('Build Container') {
       agent {
-        label "Pi_Zero"
+        label "Pi_3"
       }
       steps {
         sh "docker build -t ds18b20 ."
@@ -14,7 +14,7 @@ pipeline {
     }
     stage('Tag Container') {
       agent {
-        label "Pi_Zero"
+        label "Pi_3"
       }
       steps {
         sh "docker tag ds18b20 fx8350:5000/ds18b20:latest"
@@ -25,7 +25,7 @@ pipeline {
       parallel {
         stage('Push to local Registry') {
           agent {
-            label "Pi_Zero"
+            label "Pi_3"
           }
           steps {
             sh "docker push fx8350:5000/ds18b20:latest"
@@ -33,7 +33,7 @@ pipeline {
         }
         stage('Push to DockerHub') {
           agent {
-            label "Pi_Zero"
+            label "Pi_3"
           }
           steps {
             withDockerRegistry([credentialsId: "dockerhub", url: ""]) {
@@ -45,7 +45,7 @@ pipeline {
     }
     stage('Cleanup') {
       agent {
-        label "Pi_Zero"
+        label "Pi_3"
       }
       steps {
         sh "docker rmi fx8350:5000/ds18b20:latest"
